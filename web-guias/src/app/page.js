@@ -1,11 +1,9 @@
-import { getTemas } from './services/themes'
+import { getTemas } from './services/data'
 import Link from 'next/link';
 
 export default async function Home() {
   try {
     const temas = await getTemas();
-    console.log(temas);
-
     return (
       <main className="min-h-screen flex-col items-center p-14">
         <div className="z-10 max-w-5xl w-full items-center text-sm lg:flex justify-between mt-5">
@@ -13,10 +11,15 @@ export default async function Home() {
             Guía sobre Zúrich 🇨🇭
           </h1>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-5">
-      {temas && temas.map(tema => (
-        <div key={tema.id} className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-          <Link href="#">
+      <div className="grid grix-cols-1 lg:grid-cols-4 gap-4 mt-5">
+      {temas && temas.map(tema => {
+      const slug = tema.attributes.slug; // Declara la constante fuera del JSX
+      return (
+        <div key={tema.id} className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover-bg-gray-700">
+          <Link 
+          href={`/tema/${slug}`} 
+          as={`/tema/${slug}`}
+          >
             <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
               {tema.attributes.title}
             </h5>
@@ -25,7 +28,7 @@ export default async function Home() {
             {tema.attributes.description}
           </p>
           <Link
-            href="#"
+            href={`/tema/${slug}`}
             className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
             Leer más
             <svg
@@ -45,10 +48,11 @@ export default async function Home() {
             </svg>
           </Link>
         </div>
-      ))}
+      );
+    })}
     </div>
-      </main>
-    );
+  </main>
+  );
 
   } catch (error) {
     console.error('Error en la solicitud:', error);
