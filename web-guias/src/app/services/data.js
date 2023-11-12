@@ -6,8 +6,8 @@ export async function getTemas() {
       if (!response.ok) {
         throw new Error('No se pudo obtener la información de la API.');
       }
+
       const data = await response.json();
-      //console.log(data.data)
 
       return data.data; // Devuelve solo el arreglo de temas (data) de la respuesta.
   
@@ -18,31 +18,41 @@ export async function getTemas() {
     
   }
 
-  export async function getArticles() {
-    try {
-      const response = await fetch(`${API_URL}/temas?populate=*`);
-      if (!response.ok) {
-        throw new Error('No se pudo obtener la información de la API.');
-      }
-      const data = await response.json();
-  
-      const allArticles = [];
-  
-      data.data.forEach((tema) => {
+  export async function getArticlesForTema(slug) {
+  try {
+    const response = await fetch(`${API_URL}/temas?populate=*`);
+    if (!response.ok) {
+      throw new Error('No se pudo obtener la información de la API.');
+    }
+    const data = await response.json();
+
+    const result = {
+      titleTema: null, // Inicializa el título del tema como nulo
+      articles: [],
+    };
+
+    for (const tema of data.data) {
+      if (tema.attributes.slug === slug) {
+        // Encontramos el tema específico, ahora procesamos los artículos de ese tema.
+        result.titleTema = tema.attributes.title;
+
         tema.attributes.articles.data.forEach((article) => {
           const articleTitle = article.attributes.title;
           const articleContent = article.attributes.content;
           const articleURL = article.attributes.url;
-  
-          allArticles.push({ articleTitle, articleContent, articleURL });
+          const articleDate = article.attributes.date;
+
+          result.articles.push({ articleTitle, articleContent, articleURL, articleDate });
         });
-      });
-  
-      console.log(allArticles);
-  
-      return data.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
+
+        // Detenemos la iteración una vez que encontramos el tema.
+        break;
+      }
     }
+
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
   }
+}

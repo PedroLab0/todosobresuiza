@@ -13,7 +13,8 @@ export default async function Home() {
       </div>
       <div className="grid grix-cols-1 lg:grid-cols-4 gap-4 mt-5">
       {temas && temas.map(tema => {
-      const slug = tema.attributes.slug; // Declara la constante fuera del JSX
+      const slug = tema.attributes.slug;
+      console.log(); // Declara la constante fuera del JSX
       return (
         <div key={tema.id} className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover-bg-gray-700">
           <Link 
@@ -40,7 +41,7 @@ export default async function Home() {
             >
               <path
                 stroke="currentColor"
-                stroke-linecap="round"
+                strokeLinecap="round"
                 stroke-linejoin="round"
                 stroke-width="2"
                 d="M1 5h12m0 0L9 1m4 4L9 9"
